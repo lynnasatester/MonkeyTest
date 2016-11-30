@@ -17,6 +17,9 @@
 package monkey;
 
 import android.app.Instrumentation;
+import android.util.Log;
+
+import utils.Config;
 
 
 /**
@@ -32,13 +35,13 @@ public class MonkeyWaitEvent extends MonkeyEvent {
 
     @Override
     public int injectEvent(Instrumentation instrumentation, int verbose) {
-        if (verbose > 1) {
-            System.out.println("Wait Event for " + mWaitTime + " milliseconds");
+        if (verbose >=0) {
+            Log.d(Config.LOG_TAG,"Wait Event for " + mWaitTime + " milliseconds");
         }
         try {
             Thread.sleep(mWaitTime);
         } catch (InterruptedException e1) {
-            System.out.println("** Monkey interrupted in sleep.");
+            Log.d(Config.LOG_TAG,"** Monkey interrupted in sleep.");
             return MonkeyEvent.INJECT_FAIL;
         }
 

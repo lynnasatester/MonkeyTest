@@ -17,10 +17,13 @@
 package monkey;
 import android.app.Instrumentation;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.Surface;
 import android.view.WindowManager;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import utils.Config;
 
 /**
  * monkey screen rotation event
@@ -47,7 +50,7 @@ public class MonkeyRotationEvent extends MonkeyEvent {
     @Override
     public int injectEvent(Instrumentation instrumentation, int verbose) {
         if (verbose > 0) {
-            System.out.println(":Sending rotation degree=" + mRotationDegree +
+            Log.d(Config.LOG_TAG,":Sending rotation degree=" + mRotationDegree +
                                ", persist=" + mPersist);
         }
         // inject rotation event

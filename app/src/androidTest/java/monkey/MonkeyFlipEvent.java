@@ -20,6 +20,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import android.app.Instrumentation;
+import android.util.Log;
+
+import utils.Config;
+
 /**
  * monkey keyboard flip event
  */
@@ -57,8 +61,9 @@ public class MonkeyFlipEvent extends MonkeyEvent {
 
     @Override
     public int injectEvent(Instrumentation instrumentation, int verbose) {
-        if (verbose > 0) {
-            System.out.println(":Sending Flip keyboardOpen=" + mKeyboardOpen);
+        Log.d(Config.LOG_TAG,"flip事件  需要加权限");
+        if (verbose >= 0) {
+            Log.d(Config.LOG_TAG,":Sending Flip keyboardOpen=" + mKeyboardOpen);
         }
 
         // inject flip event
@@ -68,7 +73,7 @@ public class MonkeyFlipEvent extends MonkeyEvent {
             f.close();
             return MonkeyEvent.INJECT_SUCCESS;
         } catch (IOException e) {
-            System.out.println("Got IOException performing flip" + e);
+            Log.d(Config.LOG_TAG,"Got IOException performing flip" + e);
             return MonkeyEvent.INJECT_FAIL;
         }
     }

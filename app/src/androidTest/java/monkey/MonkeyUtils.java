@@ -16,10 +16,14 @@
 
 package monkey;
 
+import android.util.Log;
+
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import utils.Config;
 
 /**
  * Misc utilities.
@@ -99,13 +103,13 @@ public abstract class MonkeyUtils {
             if (mValidPackages.size() > 0) {
                 Iterator<String> it = mValidPackages.iterator();
                 while (it.hasNext()) {
-                    System.out.println(":AllowPackage: " + it.next());
+                    Log.d(Config.LOG_TAG,":AllowPackage: " + it.next());
                 }
             }
             if (mInvalidPackages.size() > 0) {
                 Iterator<String> it = mInvalidPackages.iterator();
                 while (it.hasNext()) {
-                    System.out.println(":DisallowPackage: " + it.next());
+                    Log.d(Config.LOG_TAG,":DisallowPackage: " + it.next());
                 }
             }
         }

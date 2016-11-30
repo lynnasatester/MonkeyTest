@@ -17,8 +17,12 @@
 package monkey;
 
 import android.app.Instrumentation;
+import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
+
+import utils.Config;
+
 /**
  * monkey key event
  */
@@ -95,7 +99,7 @@ public class MonkeyKeyEvent extends MonkeyEvent {
     @Override
     public int injectEvent(Instrumentation instrumentation,int verbose) {
         String note="";
-        if (verbose > 1) {
+        if (verbose >=0) {
             if (mAction == KeyEvent.ACTION_UP) {
                 note = "ACTION_UP";
             } else {
@@ -103,11 +107,11 @@ public class MonkeyKeyEvent extends MonkeyEvent {
             }
 
             try {
-                System.out.println(":Sending Key (" + note + "): "
+                Log.d(Config.LOG_TAG,":Sending Key (" + note + "): "
                         + mKeyCode + "    // "
                         + MonkeySourceRandom.getKeyName(mKeyCode));
             } catch (ArrayIndexOutOfBoundsException e) {
-                System.out.println(":Sending Key (" + note + "): "
+                Log.d(Config.LOG_TAG,":Sending Key (" + note + "): "
                         + mKeyCode + "    // Unknown key event");
             }
         }
@@ -116,7 +120,7 @@ public class MonkeyKeyEvent extends MonkeyEvent {
         try {
             instrumentation.sendKeyDownUpSync(mKeyCode);
         } catch (Exception e) {
-            System.out.println("Failed to send key (" + note + "): " + mKeyCode + "    // ");
+            Log.d(Config.LOG_TAG,"Failed to send key (" + note + "): " + mKeyCode + "    // ");
             return MonkeyEvent.INJECT_FAIL;
         }
         return MonkeyEvent.INJECT_SUCCESS;

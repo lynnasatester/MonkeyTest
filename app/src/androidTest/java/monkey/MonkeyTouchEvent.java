@@ -17,8 +17,11 @@
 package monkey;
 
 import android.app.Instrumentation;
+import android.util.Log;
 import android.view.InputDevice;
 import android.view.MotionEvent;
+
+import utils.Config;
 
 
 /**
@@ -40,9 +43,10 @@ public class MonkeyTouchEvent extends MonkeyMotionEvent {
         MotionEvent event=getEvent();
         printInfo();
         try {
+
             testRuner.sendPointerSync(event);
         } catch (Exception e) {
-            System.out.println(":Touching rejected ");
+            Log.d(Config.LOG_TAG,":Touching rejected ");
             return MonkeyEvent.INJECT_FAIL;
         } finally {
             event.recycle();

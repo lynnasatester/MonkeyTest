@@ -18,8 +18,11 @@ package monkey;
 
 import android.hardware.input.InputManager;
 import android.os.SystemClock;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
+
+import utils.Config;
 
 
 /**
@@ -177,7 +180,7 @@ public abstract class MonkeyMotionEvent extends MonkeyEvent {
             msg.append(" ").append(me.getPointerId(i));
             msg.append(":(").append(me.getX(i)).append(",").append(me.getY(i)).append(")");
         }
-        System.out.println(msg.toString());
+        Log.d(Config.LOG_TAG,msg.toString());
     }
 
     protected abstract String getTypeLabel();

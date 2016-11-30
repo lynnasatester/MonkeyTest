@@ -19,6 +19,7 @@ package monkey;
 import android.content.ComponentName;
 import android.graphics.PointF;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -27,6 +28,8 @@ import android.view.Surface;
 
 import java.util.List;
 import java.util.Random;
+
+import utils.Config;
 
 /**
  * monkey event queue
@@ -163,13 +166,13 @@ public class MonkeySourceRandom implements MonkeyEventSource {
 
         // if the user request was > 100%, reject it
         if (userSum > 100.0f) {
-            System.err.println("** Event weights > 100%");
+            Log.e(Config.LOG_TAG,"** Event weights > 100%");
             return false;
         }
 
         // if the user specified all of the weights, then they need to be 100%
         if (defaultCount == 0 && (userSum < 99.9f || userSum > 100.1f)) {
-            System.err.println("** Event weights != 100%");
+            Log.e(Config.LOG_TAG,"** Event weights != 100%");
             return false;
         }
 
@@ -188,9 +191,9 @@ public class MonkeySourceRandom implements MonkeyEventSource {
 
         // if verbose, show factors
         if (mVerbose > 0) {
-            System.out.println("// Event percentages:");
+            Log.d(Config.LOG_TAG,"// Event percentages:");
             for (int i = 0; i < FACTORZ_COUNT; ++i) {
-                System.out.println("//   " + i + ": " + mFactors[i] + "%");
+                Log.d(Config.LOG_TAG,"//   " + i + ": " + mFactors[i] + "%");
             }
         }
 
@@ -216,7 +219,7 @@ public class MonkeySourceRandom implements MonkeyEventSource {
                 return true;
             }
         }
-        System.err.println("** " + catName + " has no physical keys but with factor " + factor + "%.");
+        Log.e(Config.LOG_TAG,"** " + catName + " has no physical keys but with factor " + factor + "%.");
         return false;
     }
 
@@ -413,7 +416,7 @@ public class MonkeySourceRandom implements MonkeyEventSource {
             generateRotationEvent(mRandom);
             return;
         } else if (cls < mFactors[FACTOR_PERMISSION]) {
-            System.out.println("权限相关=============");
+            Log.d(Config.LOG_TAG,"权限相关=============");
 //            mQ.add(mPermissionUtil.generateRandomPermissionEvent(mRandom));
             return;
         }

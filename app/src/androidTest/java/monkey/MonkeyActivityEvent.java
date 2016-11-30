@@ -20,6 +20,9 @@ import android.app.Instrumentation;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+
+import utils.Config;
 
 /**
  * monkey activity event
@@ -54,7 +57,7 @@ public class MonkeyActivityEvent extends MonkeyEvent {
     public int injectEvent(Instrumentation instrumentation, int verbose) {
         Intent intent = getEvent();
         if (verbose > 0) {
-            System.out.println(":Switch: " + intent.toUri(0));
+            Log.d(Config.LOG_TAG,":Switch: " + intent.toUri(0));
         }
 
         if (mAlarmTime != 0){
@@ -66,12 +69,11 @@ public class MonkeyActivityEvent extends MonkeyEvent {
         try {
             instrumentation.startActivitySync(intent);
         } catch (Exception e) {
-            System.err.println("** Failed talking with activity manager!");
+            Log.e(Config.LOG_TAG,"** Failed talking with activity manager!");
             return MonkeyEvent.INJECT_ERROR_REMOTE_EXCEPTION;
         } catch (Throwable e) {
             if (verbose > 0) {
-                System.out.println("** Permissions error starting activity "
-                        + intent.toUri(0));
+                Log.d(Config.LOG_TAG,"** Permissions error starting activity " + intent.toUri(0));
             }
             return MonkeyEvent.INJECT_ERROR_SECURITY_EXCEPTION;
         }

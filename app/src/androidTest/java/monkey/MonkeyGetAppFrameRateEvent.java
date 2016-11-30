@@ -29,6 +29,8 @@ import java.io.InputStreamReader;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+import utils.Config;
+
 /**
  * Events for running a special shell command to capture the frame rate for a given app. To run
  * this test, the system property viewancestor.profile_rendering must be set to
@@ -127,8 +129,7 @@ public class MonkeyGetAppFrameRateEvent extends MonkeyEvent {
             p = Runtime.getRuntime().exec(cmd);
             int status = p.waitFor();
             if (status != 0) {
-                System.err.println(String.format("// Shell command %s status was %s",
-                        cmd, status));
+                Log.e(Config.LOG_TAG,String.format("// Shell command %s status was %s", cmd, status));
             }
             result = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
@@ -147,8 +148,8 @@ public class MonkeyGetAppFrameRateEvent extends MonkeyEvent {
                 }
             }
         } catch (Exception e) {
-            System.err.println("// Exception from " + cmd + ":");
-            System.err.println(e.toString());
+            Log.e(Config.LOG_TAG,"// Exception from " + cmd + ":");
+            Log.e(Config.LOG_TAG,e.toString());
         } finally {
             try {
                 if (result != null) {
@@ -158,7 +159,7 @@ public class MonkeyGetAppFrameRateEvent extends MonkeyEvent {
                     p.destroy();
                 }
             } catch (IOException e) {
-                System.err.println(e.toString());
+                Log.e(Config.LOG_TAG,e.toString());
             }
         }
         return MonkeyEvent.INJECT_SUCCESS;

@@ -17,8 +17,11 @@
 package monkey;
 
 import android.app.Instrumentation;
+import android.util.Log;
 import android.view.InputDevice;
 import android.view.MotionEvent;
+
+import utils.Config;
 
 /**
  * monkey trackball event
@@ -39,7 +42,7 @@ public class MonkeyTrackballEvent extends MonkeyMotionEvent {
             printInfo();
             inst.sendTrackballEventSync(event);
         } catch (Exception e) {
-            System.out.println(":Touching Key (" + getTypeLabel() + ") rejected ");
+            Log.d(Config.LOG_TAG,":Touching Key (" + getTypeLabel() + ") rejected ");
             return MonkeyEvent.INJECT_FAIL;
 
         } finally {

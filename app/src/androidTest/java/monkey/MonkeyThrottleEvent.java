@@ -19,6 +19,9 @@ package monkey;
 import java.util.List;
 
 import android.app.Instrumentation;
+import android.util.Log;
+
+import utils.Config;
 
 
 /**
@@ -36,12 +39,12 @@ public class MonkeyThrottleEvent extends MonkeyEvent {
     public int injectEvent(Instrumentation instrumentation, int verbose) {
 
         if (verbose >=0) {
-            System.out.println("Sleeping for " + mThrottle + " milliseconds");
+            Log.d(Config.LOG_TAG,"Sleeping for " + mThrottle + " milliseconds");
         }
         try {
             Thread.sleep(mThrottle);
         } catch (InterruptedException e1) {
-            System.out.println("** Monkey interrupted in sleep.");
+            Log.d(Config.LOG_TAG,"** Monkey interrupted in sleep.");
             return MonkeyEvent.INJECT_FAIL;
         }
         
