@@ -4,19 +4,18 @@ import android.app.IActivityController;
 import android.app.Instrumentation;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Debug;
 import android.os.Environment;
-import android.os.RemoteException;
 import android.os.StrictMode;
 import android.os.SystemClock;
-import android.os.UserHandle;
 import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -30,12 +29,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.IllegalFormatException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import android.os.Process;
 
 import utils.ActivityUtil;
 import utils.Config;
@@ -49,6 +46,8 @@ public class MonkeyReal {
     private Instrumentation inst;
     private Display display;
     private PackageManager mPm;
+    private Class<?> cActivityManagerNative;
+    private final IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
     /**
      * Monkey Debugging/Dev Support
      * <p>
@@ -227,8 +226,6 @@ public class MonkeyReal {
     float[] mFactors = new float[MonkeySourceRandom.FACTORZ_COUNT];
 
     MonkeyEventSource mEventSource;
-
-    private MonkeyNetworkMonitor mNetworkMonitor = new MonkeyNetworkMonitor();
 
     // information on the current activity.
     public static Intent currentIntent;
@@ -587,7 +584,7 @@ public class MonkeyReal {
 //            signalPersistentProcesses();
         }
 
-        mNetworkMonitor.start();
+//        mNetworkMonitor.start();
         int crashedAtCycle = 0;
         try {
             crashedAtCycle = runMonkeyCycles();
@@ -596,7 +593,7 @@ public class MonkeyReal {
             // original orientation.
             new MonkeyRotationEvent(Surface.ROTATION_0, false).injectEvent(inst, mVerbose);
         }
-        mNetworkMonitor.stop();
+//        mNetworkMonitor.stop();
 
         synchronized (this) {
             if (mRequestAnrTraces) {
@@ -895,6 +892,23 @@ public class MonkeyReal {
      * @return Returns true if all system interfaces were available.
      */
     private boolean getSystemInterfaces() {
+        try{
+            cActivityManagerNative = Class.forName("android.app.ActivityManagerNative");
+            Method mGetDefault = cActivityManagerNative.getMethod("getDefault", null);
+            mAm = mGetDefault.invoke(cActivityManagerNative, null);
+            Log.d(Config.LOG_TAG,"actvitymanager绑定actvitycontroller===============");
+//         setActivityController(mAm);
+
+        }catch (NoSuchMethodException e){
+            e.printStackTrace();
+        }catch (IllegalAccessException e){
+            e.printStackTrace();
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }catch (InvocationTargetException e){
+            e.printStackTrace();
+        }
+
         /*mWm = IWindowManager.Stub.asInterface(ServiceManager.getService("window"));
         if (mWm == null) {
             System.err.println("** Error: Unable to connect to window manager; is the system "
@@ -908,8 +922,6 @@ public class MonkeyReal {
                     + "running?");
             return false;
         }*/
-        Log.d(Config.LOG_TAG,"actvitymanager绑定actvitycontroller===============");
-//         setActivityController(mAm);
         /*try {
 
             mAm.setActivityController(new ActivityController(), true);
@@ -922,11 +934,8 @@ public class MonkeyReal {
     }
 
 
-    private void setActivityController(Object mAm) {
+    private void setActivityController(Class<?> cActivityManagerNative,Object mAm) {
         try {
-            Class<?> cActivityManagerNative = Class.forName("android.app.ActivityManagerNative");
-            Method mGetDefault = cActivityManagerNative.getMethod("getDefault", null);
-            mAm = mGetDefault.invoke(cActivityManagerNative, null);
             Method mSetActivityController = cActivityManagerNative.getMethod("setActivityController", Class.forName("android.app.IActivityController"));
             mSetActivityController.invoke(mAm, new ActivityController());
 //            mSetActivityController.invoke(mAm, new ActivityController(),true);
@@ -944,7 +953,6 @@ public class MonkeyReal {
     }
     private void unSetActivityController() {
         try {
-            Class<?> cActivityManagerNative = Class.forName("android.app.ActivityManagerNative");
 //            Method mGetDefault = cActivityManagerNative.getMethod("getDefault", null);
 //            mAm = mGetDefault.invoke(null, null);
             Method mSetActivityController = cActivityManagerNative.getMethod("setActivityController", Class.forName("android.app.IActivityController"));
@@ -962,15 +970,6 @@ public class MonkeyReal {
         }
     }
 
-    public void register() throws RemoteException {
-        System.out.println("registering Receiver");
-        am.registerReceiver(null, null, this, filter, null, UserHandle.USER_ALL);
-    }
-
-    public void unregister() throws RemoteException {
-        System.out.println("unregistering Receiver");
-        am.unregisterReceiver(this);
-    }
 
 
     /**
