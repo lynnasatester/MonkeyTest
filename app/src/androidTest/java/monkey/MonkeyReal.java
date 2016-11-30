@@ -1080,6 +1080,8 @@ public class MonkeyReal {
         boolean shouldAbort = false;
         boolean systemCrashed = false;
         long nextSleepTime=0;
+        String str="";
+        boolean flag;
 
         // TO DO : The count should apply to each of the script file.
         while (!systemCrashed && cycleCounter < mCount) {
@@ -1171,18 +1173,25 @@ public class MonkeyReal {
             long screenshotTime=0;
 
             MonkeyEvent ev = mEventSource.getNextEvent();
-            String str="";
+            flag=false;
             if (ev != null) {
+                int injectCode=-1;
                 if (ev.isThrottlable() && ev.getEventType()!=MonkeyEvent.EVENT_TYPE_THROTTLE ){
                     long startTime=System.currentTimeMillis();
                     try{
-                        TakeScreenshot.takeScreenshot(activityUtil.getActivity(),System.currentTimeMillis()+"");
+                        str+=ev.getStepInfo();
+                        flag=true;
+                        if (flag)
+                            injectCode = ev.injectEvent(inst, mVerbose);
+                        String time= MonkeyUtils.toCalendarTime(System.currentTimeMillis())+"";
+                        TakeScreenshot.takeScreenshot(activityUtil.getActivity(),time);
                         screenshotTime=System.currentTimeMillis()-startTime;
-                        Log.d(Config.LOG_TAG,"===="+ev.getEventType()+"--截图时间"+screenshotTime);
+                        Log.d(Config.LOG_TAG,"截图时间"+time+"---"+ev.getEventType()+"--截图用时"+screenshotTime+"---动作:"+str);
                         if (mThrottle>=screenshotTime)
                             nextSleepTime=mThrottle-screenshotTime;
                         else
                             nextSleepTime=0;
+                        str="";
                     }catch (Exception exception){
                         exception.printStackTrace();
                     }
@@ -1191,11 +1200,10 @@ public class MonkeyReal {
                     ev=new MonkeyThrottleEvent(nextSleepTime);
                 }else {
                     nextSleepTime=mThrottle;
+                    str+=ev.getStepInfo()+",";
                 }
-
-
-
-                int injectCode = ev.injectEvent(inst, mVerbose);
+                if (!flag)
+                    injectCode = ev.injectEvent(inst, mVerbose);
                 if (injectCode == MonkeyEvent.INJECT_FAIL) {
                     System.out.println("    // Injection Failed");
                     if (ev instanceof MonkeyKeyEvent) {

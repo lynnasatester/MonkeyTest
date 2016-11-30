@@ -77,4 +77,7 @@ public class MonkeyFlipEvent extends MonkeyEvent {
             return MonkeyEvent.INJECT_FAIL;
         }
     }
+    public String getStepInfo(){
+        return "keyboardOpen="+mKeyboardOpen;
+    }
 }

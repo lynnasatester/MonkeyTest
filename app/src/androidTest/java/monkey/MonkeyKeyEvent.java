@@ -107,12 +107,9 @@ public class MonkeyKeyEvent extends MonkeyEvent {
             }
 
             try {
-                Log.d(Config.LOG_TAG,":Sending Key (" + note + "): "
-                        + mKeyCode + "    // "
-                        + MonkeySourceRandom.getKeyName(mKeyCode));
+                Log.d(Config.LOG_TAG,":Sending Key (" + note + "): " + mKeyCode + "    // " + MonkeySourceRandom.getKeyName(mKeyCode));
             } catch (ArrayIndexOutOfBoundsException e) {
-                Log.d(Config.LOG_TAG,":Sending Key (" + note + "): "
-                        + mKeyCode + "    // Unknown key event");
+                Log.d(Config.LOG_TAG,":Sending Key (" + note + "): " + mKeyCode + "    // Unknown key event");
             }
         }
 
@@ -124,5 +121,15 @@ public class MonkeyKeyEvent extends MonkeyEvent {
             return MonkeyEvent.INJECT_FAIL;
         }
         return MonkeyEvent.INJECT_SUCCESS;
+    }
+
+    public String getStepInfo(){
+        String note;
+        if (mAction == KeyEvent.ACTION_UP) {
+            note = "ACTION_UP";
+        } else {
+            note = "ACTION_DOWN";
+        }
+        return note+"_"+mKeyCode+"_"+ MonkeySourceRandom.getKeyName(mKeyCode);
     }
 }

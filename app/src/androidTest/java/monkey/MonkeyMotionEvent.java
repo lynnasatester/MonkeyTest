@@ -126,7 +126,7 @@ public abstract class MonkeyMotionEvent extends MonkeyEvent {
      * 
      * @return instance of a motion event
      */
-    protected MotionEvent getEvent() {
+    public MotionEvent getEvent() {
         int pointerCount = mPointers.size();
         int[] pointerIds = new int[pointerCount];
         MotionEvent.PointerCoords[] pointerCoords = new MotionEvent.PointerCoords[pointerCount];
@@ -147,7 +147,7 @@ public abstract class MonkeyMotionEvent extends MonkeyEvent {
         return (getAction() == MotionEvent.ACTION_UP);
     }
 
-    public void printInfo() {
+    public void  printInfo() {
         MotionEvent me = getEvent();
         StringBuilder msg = new StringBuilder(":Sending ");
         msg.append(getTypeLabel()).append(" (");
@@ -185,4 +185,39 @@ public abstract class MonkeyMotionEvent extends MonkeyEvent {
 
     protected abstract String getTypeLabel();
 
+    public String getStepInfo(){
+        MotionEvent me = getEvent();
+        StringBuilder msg = new StringBuilder("");
+        msg.append(getTypeLabel()).append(" (");
+        switch (me.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                msg.append("ACTION_DOWN");
+                break;
+            case MotionEvent.ACTION_MOVE:
+                msg.append("ACTION_MOVE");
+                break;
+            case MotionEvent.ACTION_UP:
+                msg.append("ACTION_UP");
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                msg.append("ACTION_CANCEL");
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                msg.append("ACTION_POINTER_DOWN ").append(me.getPointerId(me.getActionIndex()));
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                msg.append("ACTION_POINTER_UP ").append(me.getPointerId(me.getActionIndex()));
+                break;
+            default:
+                msg.append(me.getAction());
+                break;
+        }
+        msg.append("):");
+        int pointerCount = me.getPointerCount();
+        for (int i = 0; i < pointerCount; i++) {
+            msg.append(" ").append(me.getPointerId(i));
+            msg.append(":(").append(me.getX(i)).append(",").append(me.getY(i)).append(")");
+        }
+        return msg.toString();
+    }
 }

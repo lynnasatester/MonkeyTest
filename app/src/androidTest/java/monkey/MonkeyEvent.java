@@ -67,4 +67,7 @@ public abstract class MonkeyEvent {
      *         in the case of exceptions, return its corresponding error code
      */
     public abstract int injectEvent(Instrumentation instrumentation,int verbose);
+    public  String getStepInfo(){
+        return "nodefined";
+    }
 }

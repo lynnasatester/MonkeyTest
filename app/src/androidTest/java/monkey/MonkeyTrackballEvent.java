@@ -50,4 +50,5 @@ public class MonkeyTrackballEvent extends MonkeyMotionEvent {
         }
         return MonkeyEvent.INJECT_SUCCESS;
     }
+
 }

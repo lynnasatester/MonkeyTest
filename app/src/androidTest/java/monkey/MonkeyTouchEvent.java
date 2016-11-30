@@ -43,7 +43,6 @@ public class MonkeyTouchEvent extends MonkeyMotionEvent {
         MotionEvent event=getEvent();
         printInfo();
         try {
-
             testRuner.sendPointerSync(event);
         } catch (Exception e) {
             Log.d(Config.LOG_TAG,":Touching rejected ");
